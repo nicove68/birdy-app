@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class RestTemplateResponseErrorHandlerTest {
 
   @Resource
