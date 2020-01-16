@@ -1,6 +1,6 @@
 package com.nicodev.birdyapp.client;
 
-import com.nicodev.birdyapp.client.dto.GoogleOAuthTokenDTO;
+import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

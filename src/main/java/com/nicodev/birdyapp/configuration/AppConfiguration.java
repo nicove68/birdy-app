@@ -7,10 +7,15 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.nicodev.birdyapp.exception.RestTemplateResponseErrorHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDbFactory;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,7 +28,21 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Configuration
 @EnableAsync
 @EnableScheduling
+@EnableMongoRepositories(basePackages = "com.nicodev.birdyapp.repository")
 public class AppConfiguration implements WebMvcConfigurer {
+
+  @Value("${spring.data.mongodb.uri}")
+  private String mongoUri;
+
+  @Bean
+  public MongoDbFactory mongoDbFactory() {
+    return new SimpleMongoClientDbFactory(this.mongoUri);
+  }
+
+  @Bean
+  public MongoTemplate mongoTemplate() {
+    return new MongoTemplate(mongoDbFactory());
+  }
 
   @Bean @Primary
   public ObjectMapper objectMapperSnakeCase() {

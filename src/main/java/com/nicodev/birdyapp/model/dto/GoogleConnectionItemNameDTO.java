@@ -1,4 +1,4 @@
-package com.nicodev.birdyapp.client.dto;
+package com.nicodev.birdyapp.model.dto;
 
 public class GoogleConnectionItemNameDTO {
 

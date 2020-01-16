@@ -1,6 +1,6 @@
 package com.nicodev.birdyapp.client;
 
-import com.nicodev.birdyapp.client.dto.GoogleUserInfoDTO;
+import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
