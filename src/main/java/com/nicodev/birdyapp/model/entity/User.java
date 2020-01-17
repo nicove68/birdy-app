@@ -17,8 +17,8 @@ public class User {
     @Field("email")
     private String email;
 
-    @Field("google_auth_code")
-    private String googleAuthCode;
+    @Field("google_access_token")
+    private String googleAccessToken;
 
     @Field("google_refresh_token")
     private String googleRefreshToken;
@@ -30,10 +30,10 @@ public class User {
     }
 
     @PersistenceConstructor
-    public User(String name, String email, String googleAuthCode, String googleRefreshToken, String createdAt) {
+    public User(String name, String email, String googleAccessToken, String googleRefreshToken, String createdAt) {
         this.name = name;
         this.email = email;
-        this.googleAuthCode = googleAuthCode;
+        this.googleAccessToken = googleAccessToken;
         this.googleRefreshToken = googleRefreshToken;
         this.createdAt = createdAt;
     }
@@ -50,8 +50,8 @@ public class User {
         return email;
     }
 
-    public String getGoogleAuthCode() {
-        return googleAuthCode;
+    public String getGoogleAccessToken() {
+        return googleAccessToken;
     }
 
     public String getGoogleRefreshToken() {
