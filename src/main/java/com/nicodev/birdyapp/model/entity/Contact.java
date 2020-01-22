@@ -11,8 +11,8 @@ public class Contact {
     @Id
     private String id;
 
-    @Field("owner")
-    private String owner;
+    @Field("owner_email")
+    private String ownerEmail;
 
     @Field("name")
     private String name;
@@ -21,10 +21,13 @@ public class Contact {
     private String photoUrl;
 
     @Field("day_of_birth")
-    private String dayOfBirth;
+    private int dayOfBirth;
 
     @Field("month_of_birth")
-    private String monthOfBirth;
+    private int monthOfBirth;
+
+    @Field("google_person_id")
+    private String googlePersonId;
 
     @Field("created_at")
     private String createdAt;
@@ -33,12 +36,13 @@ public class Contact {
     }
 
     @PersistenceConstructor
-    public Contact(String owner, String name, String photoUrl, String dayOfBirth, String monthOfBirth, String createdAt) {
-        this.owner = owner;
+    public Contact(String ownerEmail, String name, String photoUrl, int dayOfBirth, int monthOfBirth, String googlePersonId, String createdAt) {
+        this.ownerEmail = ownerEmail;
         this.name = name;
         this.photoUrl = photoUrl;
         this.dayOfBirth = dayOfBirth;
         this.monthOfBirth = monthOfBirth;
+        this.googlePersonId = googlePersonId;
         this.createdAt = createdAt;
     }
 
@@ -46,8 +50,8 @@ public class Contact {
         return id;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getOwnerEmail() {
+        return ownerEmail;
     }
 
     public String getName() {
@@ -58,12 +62,16 @@ public class Contact {
         return photoUrl;
     }
 
-    public String getDayOfBirth() {
+    public int getDayOfBirth() {
         return dayOfBirth;
     }
 
-    public String getMonthOfBirth() {
+    public int getMonthOfBirth() {
         return monthOfBirth;
+    }
+
+    public String getGooglePersonId() {
+        return googlePersonId;
     }
 
     public String getCreatedAt() {

@@ -1,0 +1,8 @@
+{
+  "access_token": "access_token_12345",
+  "expires_in": 3600,
+  "refresh_token": "refresh_token_12345",
+  "scope": "scope_list",
+  "token_type": "Bearer",
+  "id_token": "12345"
+}

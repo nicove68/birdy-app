@@ -1,0 +1,51 @@
+{
+  "connections": [
+    {
+      "resourceName": "people/user_1",
+      "etag": "etag_user_1",
+      "names": [
+        {
+          "metadata": {
+            "primary": true,
+            "source": {
+              "type": "CONTACT",
+              "id": "id"
+            }
+          },
+          "displayName": "Juan",
+          "givenName": "Juan",
+          "displayNameLastFirst": "Juan"
+        },
+        {
+          "metadata": {
+            "source": {
+              "type": "PROFILE",
+              "id": "id"
+            }
+          },
+          "displayName": "Juan Profile",
+          "givenName": "Juan Profile",
+          "displayNameLastFirst": "Juan Profile"
+        }
+      ],
+      "photos": [],
+      "birthdays": [
+        {
+          "metadata": {
+            "primary": true,
+            "source": {
+              "type": "CONTACT",
+              "id": "id"
+            }
+          },
+          "date": {
+            "month": 6,
+            "day": 4
+          }
+        }
+      ]
+    }
+  ],
+  "totalPeople": 1,
+  "totalItems": 1
+}
