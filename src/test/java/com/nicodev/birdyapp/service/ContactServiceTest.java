@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.nicodev.birdyapp.client.GoogleOAuthClient;
 import com.nicodev.birdyapp.client.GooglePeopleClient;
 import com.nicodev.birdyapp.model.dto.GoogleConnectionResponseDTO;
 import com.nicodev.birdyapp.model.entity.Contact;
@@ -35,6 +36,9 @@ public class ContactServiceTest {
   @Mock
   private GooglePeopleClient googlePeopleClient;
 
+  @Mock
+  private GoogleOAuthClient googleOAuthClient;
+
   @Resource
   private ContactRepository contactRepository;
 
@@ -44,7 +48,7 @@ public class ContactServiceTest {
 
   @Before
   public void setUp() {
-    contactService = new ContactService(googlePeopleClient, contactRepository);
+    contactService = new ContactService(googlePeopleClient, googleOAuthClient, contactRepository);
     user = TestUtils.getTestUser();
     objectMapperCamelCase = new ObjectMapper()
         .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)

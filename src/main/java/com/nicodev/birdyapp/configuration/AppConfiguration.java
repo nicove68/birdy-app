@@ -1,6 +1,8 @@
 package com.nicodev.birdyapp.configuration;
 
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -21,8 +23,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 @Configuration

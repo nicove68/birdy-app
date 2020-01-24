@@ -8,6 +8,7 @@ import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
 import com.nicodev.birdyapp.transformer.UserTransformer;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,11 @@ public class UserService {
         logger.info("Birdy user was created successfully");
 
         return user;
+    }
+
+    public List<User> getAllUsers() {
+        logger.info("Getting for all birdy users");
+
+        return userRepository.findAll();
     }
 }

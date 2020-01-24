@@ -23,15 +23,12 @@ public class ImportContactsController {
     }
 
 
-    @GetMapping("/oauth/google")
+    @GetMapping("/import_contacts")
     public void createBirdyUserAndImportContacts(
         @RequestParam(value = "code") String googleAuthCode
     ) {
 
         User user = userService.createUser(googleAuthCode);
         List<Contact> contacts = contactService.createContacts(user);
-
     }
-
-
 }

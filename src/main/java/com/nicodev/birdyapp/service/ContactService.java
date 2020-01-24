@@ -1,9 +1,11 @@
 package com.nicodev.birdyapp.service;
 
+import com.nicodev.birdyapp.client.GoogleOAuthClient;
 import com.nicodev.birdyapp.client.GooglePeopleClient;
 import com.nicodev.birdyapp.model.dto.GoogleConnectionItemBirthdayDTO;
 import com.nicodev.birdyapp.model.dto.GoogleConnectionItemDTO;
 import com.nicodev.birdyapp.model.dto.GoogleConnectionResponseDTO;
+import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.ContactRepository;
@@ -22,11 +24,17 @@ public class ContactService {
     private static Logger logger = LoggerFactory.getLogger(ContactService.class);
 
     private GooglePeopleClient googlePeopleClient;
+    private GoogleOAuthClient googleOAuthClient;
     private ContactRepository contactRepository;
 
     @Autowired
-    public ContactService(GooglePeopleClient googlePeopleClient, ContactRepository contactRepository) {
+    public ContactService(
+        GooglePeopleClient googlePeopleClient,
+        GoogleOAuthClient googleOAuthClient,
+        ContactRepository contactRepository
+    ) {
         this.googlePeopleClient = googlePeopleClient;
+        this.googleOAuthClient = googleOAuthClient;
         this.contactRepository = contactRepository;
     }
 
@@ -35,17 +43,35 @@ public class ContactService {
 
         GoogleConnectionResponseDTO googleConnectionResponse = googlePeopleClient.getGoogleUserConnections(user.getGoogleAccessToken());
 
-        List<Contact> contacts = googleConnectionResponse.getConnections().stream()
+        List<Contact> contacts = getFilteredContacts(user, googleConnectionResponse);
+
+        contactRepository.saveAll(contacts);
+        logger.info("Birdy user contacts was created successfully");
+
+        return contacts;
+    }
+
+    public void updateContacts(User user) {
+        logger.info("Starting update contacts for user email: {}", user.getEmail());
+
+        GoogleOAuthTokenDTO googleOAuthToken = googleOAuthClient.getGoogleOAuthTokenUsingRefreshToken(user.getGoogleRefreshToken());
+        GoogleConnectionResponseDTO googleConnectionResponse = googlePeopleClient.getGoogleUserConnections(googleOAuthToken.getAccessToken());
+
+        List<Contact> contacts = getFilteredContacts(user, googleConnectionResponse);
+
+        contactRepository.deleteAll();
+        logger.info("All contacts removed for user email: {}", user.getEmail());
+
+        contactRepository.saveAll(contacts);
+        logger.info("All contacts saved for user email: {}", user.getEmail());
+    }
+
+    private List<Contact> getFilteredContacts(User user, GoogleConnectionResponseDTO googleConnectionResponse) {
+        return googleConnectionResponse.getConnections().stream()
             .filter(this::hasPrimaryName)
             .filter(this::hasBirthdayDate)
             .map(connection -> ContactTransformer.toContact(user, connection))
             .collect(Collectors.toList());
-
-        contactRepository.saveAll(contacts);
-
-        logger.info("Birdy user contacts was created successfully");
-
-        return contacts;
     }
 
     private boolean hasPrimaryName(GoogleConnectionItemDTO connectionItem) {
