@@ -1,0 +1,33 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  background-image: url("../images/birdy_background.png");
+  background-repeat: repeat;
+  font-size: 14px;
+}
+
+.information-box {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 60px 80px;
+  margin: 100px auto;
+}
+
+.information-box h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px auto 50px;
+}
+
+.information-box p {
+  text-align: justify;
+}
+
+.information-box .connect-button {
+  margin: 30px auto 50px;
+}
+
+.information-box .legals {
+  color: #888;
+  font-size: 11px;
+}

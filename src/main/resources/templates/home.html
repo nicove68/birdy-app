@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Birdy | Recordatorio de Cumpleaños para Google Contacts</title>
+    <meta name="description" content="Birdy es una herramienta de recordatorio de cumpleaños por email desarrollada principalmente para los usuarios que poseen una cuenta de Google y agendaron los cumpleaños en el perfil de cada contacto en Google Contacts en lugar de crear un evento o recordatorio en Google Calendar." />
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/birdy_styles.css" type="text/css">
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <div class="information-box text-center">
+                    <h1>
+                        <a href="#">
+                            <img src="images/birdy_logo.jpg" alt="Birdy" />
+                        </a>
+                    </h1>
+                    <h2>Recordatorio de Cumpleaños para Google Contacts</h2>
+                    <p>Birdy es una herramienta de recordatorio de cumpleaños por email desarrollada principalmente para los usuarios que poseen una cuenta de Google y agendaron los cumpleaños en el perfil de cada contacto en <strong>Google Contacts</strong> en lugar de crear un evento o recordatorio en <strong>Google Calendar.</strong></p>
+                    <p>Sólo debes conectar y luego aceptar que Birdy acceda a tus contactos de Google Contacts para que podamos crear tus recordarios. Conectá y listo!</p>
+                    <a href="https://accounts.google.com/o/oauth2/auth?client_id=3886764609-hqibbqhsprfcj4f01shcg15jjak9sp5n.apps.googleusercontent.com&access_type=offline&redirect_uri=http://localhost:5000/birdy-app/import_contacts&scope=profile email https://www.googleapis.com/auth/contacts.readonly&response_type=code" class="btn btn-danger btn-lg connect-button">Conecta con Birdy</a>
+                    <p class="legals">Guardaremos en nuestras bases de datos unicamente tu nombre y tu email, y de cada contacto tuyo que tenga agendado un cumpleaños guardaremos su nombre, su fecha de cumpleaños, su foto de perfil y su google person id. Todos los dias actualizaremos nuestras bases con los datos de tus contactos, asi que no te preocupes si agendas a nuevas personas o si editas los datos de alguien. Recuerda también que puedes darte de baja en cualquier momento, hay un link para desuscribirte de las alertas en todos los mails que te envie Birdy.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
