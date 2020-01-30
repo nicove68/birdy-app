@@ -8,7 +8,6 @@ body {
 
 .information-box {
   background-color: #fff;
-  border: 1px solid #ccc;
   padding: 60px 80px;
   margin: 100px auto;
 }
@@ -30,4 +29,23 @@ body {
 .information-box .legals {
   color: #888;
   font-size: 11px;
+}
+
+.information-box h3 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.information-box .message {
+  text-align: center;
+}
+
+.information-box .message-primary {
+  font-size: 18px;
+  margin-bottom: 7px;
+}
+
+.information-box .message-secondary {
+  font-size: 14px;
+  color: #888;
 }

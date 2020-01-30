@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Birdy | Recordatorio de Cumpleaños para Google Contacts</title>
+    <meta name="description" content="Birdy es una herramienta de recordatorio de cumpleaños por email desarrollada principalmente para los usuarios que poseen una cuenta de Google y agendaron los cumpleaños en el perfil de cada contacto en Google Contacts en lugar de crear un evento o recordatorio en Google Calendar." />
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/birdy_styles.css" type="text/css">
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 offset-sm-2">
+                <div class="information-box text-center shadow-sm rounded">
+                    <h1>
+                        <a href="#">
+                            <img src="images/birdy_logo.jpg" alt="Birdy" />
+                        </a>
+                    </h1>
+                    <h2>Recordatorio de Cumpleaños para Google Contacts</h2>
+                    <h3 th:text="${title}"></h3>
+                    <p class="message message-primary" th:text="${primary}">A</p>
+                    <p class="message message-secondary" th:text="${secondary}"></p>
+                    <a th:href="${link_url}" th:text="${link_text}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
