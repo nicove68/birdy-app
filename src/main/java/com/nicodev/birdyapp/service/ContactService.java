@@ -46,7 +46,8 @@ public class ContactService {
         List<Contact> contacts = getFilteredContacts(user, googleConnectionResponse);
 
         contactRepository.saveAll(contacts);
-        logger.info("Birdy user contacts was created successfully");
+        logger.info("Birdy user [{}] contacts was created successfully", user.getEmail());
+
 
         return contacts;
     }
@@ -96,5 +97,11 @@ public class ContactService {
         }
 
         return false;
+    }
+
+    public void deleteUserContacts(String ownerEmail) {
+        contactRepository.deleteAllByOwnerEmail(ownerEmail);
+
+        logger.info("All contacts removed for user email: {}", ownerEmail);
     }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.nicodev.birdyapp.exception.RestTemplateResponseErrorHandler;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,9 @@ public class AppConfiguration implements WebMvcConfigurer {
 
   @Value("${spring.data.mongodb.uri}")
   private String mongoUri;
+
+  @Value("${jasypt.encryptor.password}")
+  private String encryptorPassword;
 
   @Bean
   public MongoDbFactory mongoDbFactory() {
@@ -88,4 +92,10 @@ public class AppConfiguration implements WebMvcConfigurer {
             .build();
   }
 
+  @Bean
+  public BasicTextEncryptor textEncryptor() {
+    BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+    textEncryptor.setPasswordCharArray(encryptorPassword.toCharArray());
+    return textEncryptor;
+  }
 }

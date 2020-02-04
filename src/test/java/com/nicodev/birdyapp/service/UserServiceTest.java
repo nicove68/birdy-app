@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.nicodev.birdyapp.client.GoogleOAuthClient;
 import com.nicodev.birdyapp.client.GoogleUserInfoClient;
 import com.nicodev.birdyapp.exception.rest.BadRequestException;
+import com.nicodev.birdyapp.exception.rest.NotFoundException;
 import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
 import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
@@ -19,6 +20,7 @@ import com.nicodev.birdyapp.repository.UserRepository;
 import com.nicodev.birdyapp.util.TestUtils;
 import java.util.List;
 import javax.annotation.Resource;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,6 +47,7 @@ public class UserServiceTest {
   @Resource
   private UserRepository userRepository;
 
+  private BasicTextEncryptor textEncryptor;
   private ObjectMapper objectMapperSnakeCase;
   private UserService userService;
 
@@ -53,13 +56,15 @@ public class UserServiceTest {
 
   @Before
   public void setUp() {
-    userService = new UserService(googleOAuthClient, googleUserInfoClient, userRepository);
+    userService = new UserService(googleOAuthClient, googleUserInfoClient, userRepository, textEncryptor);
     objectMapperSnakeCase = new ObjectMapper()
         .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setSerializationInclusion(Include.NON_NULL)
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
         .registerModule(new Jdk8Module());
+    textEncryptor = new BasicTextEncryptor();
+    textEncryptor.setPasswordCharArray("birdy".toCharArray());
   }
 
   @Before
@@ -108,5 +113,37 @@ public class UserServiceTest {
 
     userService.createUser("google_auth_code");
     userService.createUser("google_auth_code");
+  }
+
+  @Test
+  public void when_delete_inexistent_user_then_throw_not_found_exception() {
+    exceptionRule.expect(NotFoundException.class);
+    exceptionRule.expectMessage("User not exists");
+
+    userService.deleteUser("inexistent_user_email");
+  }
+
+  @Test
+  public void when_delete_user_then_repository_must_be_empty() {
+    String oauthTokenStringResponse = TestUtils.readFile("google-oauth-api-json-responses/first_oauth_token.json");
+    GoogleOAuthTokenDTO googleOAuthToken = TestUtils.stringToObject(oauthTokenStringResponse, GoogleOAuthTokenDTO.class, objectMapperSnakeCase);
+
+    when(googleOAuthClient.getGoogleOAuthToken(anyString())).thenReturn(googleOAuthToken);
+
+    String userInfoStringResponse = TestUtils.readFile("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    GoogleUserInfoDTO googleUserInfo = TestUtils.stringToObject(userInfoStringResponse, GoogleUserInfoDTO.class, objectMapperSnakeCase);
+
+    when(googleUserInfoClient.getGoogleUserInfo(anyString())).thenReturn(googleUserInfo);
+
+    userService.createUser("google_auth_code");
+
+    List<User> savedUsers = userRepository.findAll();
+    Assert.assertEquals(savedUsers.get(0).getEmail(), "test@test.com");
+    Assert.assertEquals(1, savedUsers.size());
+
+    userService.deleteUser("test@test.com");
+
+    savedUsers = userRepository.findAll();
+    Assert.assertEquals(0, savedUsers.size());
   }
 }

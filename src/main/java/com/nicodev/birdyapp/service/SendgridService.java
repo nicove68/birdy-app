@@ -4,6 +4,7 @@ import com.nicodev.birdyapp.client.SendgridClient;
 import com.nicodev.birdyapp.model.BirdyEmail;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,7 +12,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class SendgridService {
@@ -29,35 +32,41 @@ public class SendgridService {
 
     private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM");
     private static final DateTimeFormatter HEADER_MESSAGE_DATE_FORMATTER = DateTimeFormatter.ofPattern("E dd 'de' MMMM 'de' yyyy");
+
+    @Value("${heroku.app.main-path}")
+    private String herokuMainPath;
+
     private SendgridClient sendGridClient;
+    private UserService userService;
 
     @Autowired
-    public SendgridService(SendgridClient sendGridClient) {
+    public SendgridService(SendgridClient sendGridClient, UserService userService) {
         this.sendGridClient = sendGridClient;
+        this.userService = userService;
     }
 
-    // TODO: generate unsuscribe link
     public void sendWelcomeEmail(User user) {
+        URI unsuscribeUri = getUnsuscribeLink(user.getEmail());
         BirdyEmail birdyEmail = new BirdyEmail.Builder()
             .templateId(WELCOME_EMAIL_TEMPLATE_ID)
             .subject(WELCOME_EMAIL_SUBJECT)
             .toName(user.getName())
             .toEmail(user.getEmail())
+            .unsuscribeLink(unsuscribeUri.toString())
             .build();
 
         logger.info("Sending welcome email to " + user.getEmail());
         sendGridClient.sendEmail(birdyEmail);
     }
 
-    public void sendByeEmail(User user) {
+    public void sendByeEmail(String userEmail) {
         BirdyEmail birdyEmail = new BirdyEmail.Builder()
             .templateId(BYE_EMAIL_TEMPLATE_ID)
             .subject(BYE_EMAIL_SUBJECT)
-            .toName(user.getName())
-            .toEmail(user.getEmail())
+            .toEmail(userEmail)
             .build();
 
-        logger.info("Sending bye email to " + user.getEmail());
+        logger.info("Sending bye email to " + userEmail);
         sendGridClient.sendEmail(birdyEmail);
     }
 
@@ -65,6 +74,7 @@ public class SendgridService {
         List<String> contactNames = contacts.stream().map(Contact::getName).collect(Collectors.toList());
         LocalDate now = LocalDate.now();
         String subject = String.format(BIRTHDAY_EMAIL_SUBJECT, now.format(SUBJECT_DATE_FORMATTER));
+        URI unsuscribeUri = getUnsuscribeLink(user.getEmail());
         BirdyEmail birdyEmail = new BirdyEmail.Builder()
             .templateId(BIRTHDAY_EMAIL_TEMPLATE_ID)
             .subject(subject)
@@ -72,9 +82,19 @@ public class SendgridService {
             .toEmail(user.getEmail())
             .birthdayNames(contactNames)
             .headerMessage(now.format(HEADER_MESSAGE_DATE_FORMATTER))
+            .unsuscribeLink(unsuscribeUri.toString())
             .build();
 
         logger.info("Sending birthday email to " + user.getEmail());
         sendGridClient.sendEmail(birdyEmail);
+    }
+
+    private URI getUnsuscribeLink(String userEmail) {
+        String data = userService.encryptUserEmail(userEmail);
+        return UriComponentsBuilder
+            .fromUriString(herokuMainPath)
+            .path("/unsuscribe")
+            .queryParam("data", data)
+            .build().toUri();
     }
 }
