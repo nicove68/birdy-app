@@ -3,6 +3,7 @@ package com.nicodev.birdyapp.controller;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.service.ContactService;
+import com.nicodev.birdyapp.service.SendgridService;
 import com.nicodev.birdyapp.service.UserService;
 import java.util.List;
 import org.slf4j.Logger;
@@ -31,11 +32,13 @@ public class WebController {
 
   private UserService userService;
   private ContactService contactService;
+  private SendgridService sendgridService;
 
   @Autowired
-  public WebController(UserService userService, ContactService contactService) {
+  public WebController(UserService userService, ContactService contactService, SendgridService sendgridService) {
     this.userService = userService;
     this.contactService = contactService;
+    this.sendgridService = sendgridService;
   }
 
 
@@ -52,6 +55,7 @@ public class WebController {
     try {
       User user = userService.createUser(googleAuthCode);
       List<Contact> contacts = contactService.createContacts(user);
+      sendgridService.sendWelcomeEmail(user);
 
       String primaryText = String.format(MSG_OK_PRIMARY, user.getName(), contacts.size());
       String secondaryText = String.format(MSG_OK_SECONDARY, user.getEmail());
