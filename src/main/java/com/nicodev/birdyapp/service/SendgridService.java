@@ -21,13 +21,13 @@ public class SendgridService {
 
     private static Logger logger = LoggerFactory.getLogger(SendgridService.class);
 
-    private static final String WELCOME_EMAIL_TEMPLATE_ID = "d-c50ae6d301cc410aa8a2c1a3450e2f36";
+    private static final String WELCOME_EMAIL_TEMPLATE_ID = "d-baf1a04e25c04e6c86947cbacf52bff7";
     private static final String WELCOME_EMAIL_SUBJECT = "Bienvenido a Birdy";
 
-    private static final String BYE_EMAIL_TEMPLATE_ID = "d-9fc1db4d4faf48e68a7a7f4250dfbff9";
+    private static final String BYE_EMAIL_TEMPLATE_ID = "d-610c62bc91484209a7b26d34880d88e4";
     private static final String BYE_EMAIL_SUBJECT = "Hasta la próxima";
 
-    private static final String BIRTHDAY_EMAIL_TEMPLATE_ID = "d-10244fbde11741dcb04676b1b5cc5da9";
+    private static final String BIRTHDAY_EMAIL_TEMPLATE_ID = "d-0762b5a257ff477aafcdc3bfa87a2b1f";
     private static final String BIRTHDAY_EMAIL_SUBJECT = "Birdy - Cumpleaños %s.";
 
     private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM");
