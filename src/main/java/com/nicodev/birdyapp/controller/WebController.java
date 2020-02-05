@@ -5,14 +5,17 @@ import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.service.ContactService;
 import com.nicodev.birdyapp.service.SendgridService;
 import com.nicodev.birdyapp.service.UserService;
+import java.net.URI;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 public class WebController {
@@ -34,6 +37,12 @@ public class WebController {
   private static final String MSG_LINK_TEXT_TO_HOME = "Volver a la home";
   private static final String MSG_LINK_URL_TO_HOME = "home";
 
+  @Value("${google.api.client-id}")
+  private String googleApiClientId;
+
+  @Value("${google.api.oauth.redirect-uri}")
+  private String googleApiOAuthRedirectUri;
+
   private UserService userService;
   private ContactService contactService;
   private SendgridService sendgridService;
@@ -51,7 +60,19 @@ public class WebController {
 
 
   @GetMapping(value = {"/", "/home"})
-  public String showHome() {
+  public String showHome(Model model) {
+
+    URI connectUri = UriComponentsBuilder
+        .fromUriString("https://accounts.google.com/o/oauth2/auth")
+        .queryParam("client_id", googleApiClientId)
+        .queryParam("access_type", "offline")
+        .queryParam("redirect_uri", googleApiOAuthRedirectUri)
+        .queryParam("scope", "profile email https://www.googleapis.com/auth/contacts.readonly")
+        .queryParam("response_type", "code")
+        .build().toUri();
+
+    model.addAttribute("connect_uri", connectUri.toString());
+
     return "home";
   }
 
