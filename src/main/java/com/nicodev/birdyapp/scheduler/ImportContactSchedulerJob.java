@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class ImportContactSchedulerJob {
 
     private static Logger logger = LoggerFactory.getLogger(ImportContactSchedulerJob.class);
-    private static final String RUN_ALL_DAYS_AT_6_AM_UTC = "0 0 16 * * ?";
+    private static final String RUN_ALL_DAYS_AT_6_AM_UTC = "0 0 17 * * ?";
 
     private UserService userService;
     private ContactService contactService;
