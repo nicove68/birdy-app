@@ -75,7 +75,7 @@ public class GoogleOAuthClient {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        restTemplateGoogleApi.exchange(uri, HttpMethod.GET, entity, String.class);
+        restTemplateGoogleApi.exchange(uri, HttpMethod.POST, entity, String.class);
     }
 
     private URI getUriForRevokeGoogleOAuthToken(String accessToken) {
