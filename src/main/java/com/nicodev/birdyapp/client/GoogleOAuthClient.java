@@ -1,13 +1,16 @@
 package com.nicodev.birdyapp.client;
 
 import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @Component
 public class GoogleOAuthClient {
@@ -63,5 +66,23 @@ public class GoogleOAuthClient {
                 .queryParam("client_secret", googleApiClientSecret)
                 .queryParam("grant_type", "refresh_token")
                 .build().toUri();
+    }
+
+    public void revokeGoogleOAuthToken(String accessToken) {
+        URI uri = getUriForRevokeGoogleOAuthToken(accessToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        restTemplateGoogleApi.exchange(uri, HttpMethod.GET, entity, String.class);
+    }
+
+    private URI getUriForRevokeGoogleOAuthToken(String accessToken) {
+        return UriComponentsBuilder
+            .fromUriString(googleApiOAuthEndpoint)
+            .path("/revoke")
+            .queryParam("token", accessToken)
+            .build().toUri();
     }
 }

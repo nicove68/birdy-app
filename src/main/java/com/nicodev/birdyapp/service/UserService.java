@@ -10,6 +10,7 @@ import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
 import com.nicodev.birdyapp.transformer.UserTransformer;
 import java.util.List;
+import java.util.Optional;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
@@ -64,13 +65,22 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void deleteUser(String userEmail) {
-        if (!userRepository.existsByEmail(userEmail))
+    public User findUserByEmail(String userEmail) {
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        if (!user.isPresent())
             throw new NotFoundException("User not exists");
 
-        userRepository.deleteByEmail(userEmail);
+        return user.get();
+    }
 
-        logger.info("Birdy user [{}] was deleted successfully", userEmail);
+    public void deleteUser(String userEmail) {
+        User user = findUserByEmail(userEmail);
+
+        googleOAuthClient.revokeGoogleOAuthToken(user.getGoogleAccessToken());
+
+        userRepository.deleteByEmail(user.getEmail());
+
+        logger.info("Birdy user [{}] was deleted successfully", user.getEmail());
     }
 
     public String decryptUserData(String data) {

@@ -1,6 +1,7 @@
 package com.nicodev.birdyapp.service;
 
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -120,6 +121,8 @@ public class UserServiceTest {
     exceptionRule.expect(NotFoundException.class);
     exceptionRule.expectMessage("User not exists");
 
+    doNothing().when(googleOAuthClient).revokeGoogleOAuthToken(anyString());
+
     userService.deleteUser("inexistent_user_email");
   }
 
@@ -134,6 +137,8 @@ public class UserServiceTest {
     GoogleUserInfoDTO googleUserInfo = TestUtils.stringToObject(userInfoStringResponse, GoogleUserInfoDTO.class, objectMapperSnakeCase);
 
     when(googleUserInfoClient.getGoogleUserInfo(anyString())).thenReturn(googleUserInfo);
+
+    doNothing().when(googleOAuthClient).revokeGoogleOAuthToken(anyString());
 
     userService.createUser("google_auth_code");
 
