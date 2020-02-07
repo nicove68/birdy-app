@@ -32,7 +32,7 @@ public class SendgridService {
     private static final String BIRTHDAY_EMAIL_TEMPLATE_ID = "d-0762b5a257ff477aafcdc3bfa87a2b1f";
     private static final String BIRTHDAY_EMAIL_SUBJECT = "Birdy - Cumpleaños %s.";
 
-    private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM").withLocale(new Locale("es","AR"));
+    private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMM").withLocale(new Locale("es","AR"));
     private static final DateTimeFormatter HEADER_MESSAGE_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy").withLocale(new Locale("es","AR"));
 
     @Value("${heroku.app.main-path}")
