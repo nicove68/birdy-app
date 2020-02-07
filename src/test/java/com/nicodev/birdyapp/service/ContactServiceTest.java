@@ -49,7 +49,7 @@ public class ContactServiceTest {
   @Before
   public void setUp() {
     contactService = new ContactService(googlePeopleClient, googleOAuthClient, contactRepository);
-    user = TestUtils.getTestUser();
+    user = TestUtils.getTestUser("Test");
     objectMapperCamelCase = new ObjectMapper()
         .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

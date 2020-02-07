@@ -64,7 +64,7 @@ public class UserServiceTest {
         .setSerializationInclusion(Include.NON_NULL)
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
         .registerModule(new Jdk8Module());
-    user = TestUtils.getTestUser();
+    user = TestUtils.getTestUser("Test");
   }
 
   @Before
