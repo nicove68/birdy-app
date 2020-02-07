@@ -15,7 +15,7 @@ import com.nicodev.birdyapp.model.dto.GoogleConnectionResponseDTO;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.ContactRepository;
-import com.nicodev.birdyapp.util.TestUtils;
+import com.nicodev.birdyapp.TestUtils;
 import java.util.List;
 import javax.annotation.Resource;
 import org.junit.Assert;
@@ -55,7 +55,7 @@ public class ContactServiceTest {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setSerializationInclusion(Include.NON_NULL)
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-        .registerModule(new Jdk8Module());;
+        .registerModule(new Jdk8Module());
   }
 
   @Before

@@ -10,7 +10,7 @@ public class BirdyEmail {
   private String subject;
   private String headerMessage;
   private List<String> birthdayNames;
-  private String unsuscribeLink;
+  private String unsubscribeLink;
 
   public String getToEmail() {
     return toEmail;
@@ -36,8 +36,8 @@ public class BirdyEmail {
     return birthdayNames;
   }
 
-  public String getUnsuscribeLink() {
-    return unsuscribeLink;
+  public String getUnsubscribeLink() {
+    return unsubscribeLink;
   }
 
   private BirdyEmail(Builder builder) {
@@ -47,7 +47,7 @@ public class BirdyEmail {
     subject = builder.subject;
     headerMessage = builder.headerMessage;
     birthdayNames = builder.birthdayNames;
-    unsuscribeLink = builder.unsuscribeLink;
+    unsubscribeLink = builder.unsubscribeLink;
   }
 
 
@@ -59,7 +59,7 @@ public class BirdyEmail {
     private String subject;
     private String headerMessage;
     private List<String> birthdayNames;
-    private String unsuscribeLink;
+    private String unsubscribeLink;
 
     public Builder() {
     }
@@ -94,8 +94,8 @@ public class BirdyEmail {
       return this;
     }
 
-    public Builder unsuscribeLink(String val) {
-      unsuscribeLink = val;
+    public Builder unsubscribeLink(String val) {
+      unsubscribeLink = val;
       return this;
     }
 

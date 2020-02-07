@@ -35,7 +35,7 @@ public class SendgridClient {
     personalization.addDynamicTemplateData("subject", birdyEmail.getSubject());
     personalization.addDynamicTemplateData("header_message", birdyEmail.getHeaderMessage());
     personalization.addDynamicTemplateData("birthday_names", birdyEmail.getBirthdayNames());
-    personalization.addDynamicTemplateData("unsuscrbie_link", birdyEmail.getUnsuscribeLink());
+    personalization.addDynamicTemplateData("unsubscribe_link", birdyEmail.getUnsubscribeLink());
 
     Mail mail = new Mail();
     mail.setFrom(from);

@@ -111,17 +111,17 @@ public class WebController {
     }
   }
 
-  @GetMapping("/unsuscribe")
-  public String unsuscribe(
+  @GetMapping("/unsubscribe")
+  public String unsubscribe(
       @RequestParam(value = "data") String data,
       Model model
   ) {
     try {
-      String userEmail = userService.decryptUserData(data);
+      User unsubscribedUser = userService.getUserForUnsubscribe(data);
 
-      userService.deleteUser(userEmail);
-      contactService.deleteUserContacts(userEmail);
-      sendgridService.sendByeEmail(userEmail);
+      userService.deleteUser(unsubscribedUser);
+      contactService.deleteUserContacts(unsubscribedUser);
+      sendgridService.sendByeEmail(unsubscribedUser);
 
       model.addAttribute("title", MSG_BYE_TITLE);
       model.addAttribute("primary", MSG_BYE_PRIMARY);

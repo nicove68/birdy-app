@@ -9,10 +9,10 @@ import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
 import com.nicodev.birdyapp.transformer.UserTransformer;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +26,16 @@ public class UserService {
     private GoogleOAuthClient googleOAuthClient;
     private GoogleUserInfoClient googleUserInfoClient;
     private UserRepository userRepository;
-    private BasicTextEncryptor textEncryptor;
 
     @Autowired
     public UserService(
         GoogleOAuthClient googleOAuthClient,
         GoogleUserInfoClient googleUserInfoClient,
-        UserRepository userRepository,
-        BasicTextEncryptor textEncryptor
+        UserRepository userRepository
     ) {
         this.googleOAuthClient = googleOAuthClient;
         this.googleUserInfoClient = googleUserInfoClient;
         this.userRepository = userRepository;
-        this.textEncryptor = textEncryptor;
     }
 
     public User createUser(String googleAuthCode){
@@ -65,17 +62,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findUserByEmail(String userEmail) {
-        Optional<User> user = userRepository.findByEmail(userEmail);
-        if (!user.isPresent())
-            throw new NotFoundException("User not exists");
-
-        return user.get();
-    }
-
-    public void deleteUser(String userEmail) {
-        User user = findUserByEmail(userEmail);
-
+    public void deleteUser(User user) {
         googleOAuthClient.revokeGoogleOAuthToken(user.getGoogleAccessToken());
 
         userRepository.deleteByEmail(user.getEmail());
@@ -83,19 +70,23 @@ public class UserService {
         logger.info("Birdy user [{}] was deleted successfully", user.getEmail());
     }
 
-    public String decryptUserData(String data) {
-        try {
-            return textEncryptor.decrypt(data);
-        } catch (EncryptionOperationNotPossibleException ex) {
-            throw new BadRequestException("Failed when decrypt data");
-        }
+    public User getUserForUnsubscribe(String data) {
+        String decodedData = new String(Base64.getUrlDecoder().decode(data));
+        List<String> values = Arrays.asList(decodedData.split("&"));
+        if (values.size() != 2)
+            throw new BadRequestException("Failed when validate data: " + data);
+
+        String userId = values.get(0);
+        String userEmail = values.get(1);
+
+        return findUserForUnsubscribe(userId, userEmail);
     }
 
-    public String encryptUserEmail(String userEmail) {
-        try {
-            return textEncryptor.encrypt(userEmail);
-        } catch (EncryptionOperationNotPossibleException ex) {
-            throw new BadRequestException("Failed when encrypt email");
-        }
+    private User findUserForUnsubscribe(String userId, String userEmail) {
+        Optional<User> user = userRepository.findByIdAndEmail(userId, userEmail);
+        if (!user.isPresent())
+            throw new NotFoundException("User not exists");
+
+        return user.get();
     }
 }

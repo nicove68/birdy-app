@@ -99,9 +99,9 @@ public class ContactService {
         return false;
     }
 
-    public void deleteUserContacts(String ownerEmail) {
-        contactRepository.deleteAllByOwnerEmail(ownerEmail);
+    public void deleteUserContacts(User user) {
+        contactRepository.deleteAllByOwnerEmail(user.getEmail());
 
-        logger.info("All contacts removed for user email: {}", ownerEmail);
+        logger.info("All contacts removed for user email: {}", user.getEmail());
     }
 }

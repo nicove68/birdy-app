@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.nicodev.birdyapp.TestUtils;
 import com.nicodev.birdyapp.client.GoogleOAuthClient;
 import com.nicodev.birdyapp.client.GoogleUserInfoClient;
 import com.nicodev.birdyapp.exception.rest.BadRequestException;
@@ -18,10 +19,9 @@ import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
 import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
-import com.nicodev.birdyapp.util.TestUtils;
+import java.util.Base64;
 import java.util.List;
 import javax.annotation.Resource;
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,24 +48,23 @@ public class UserServiceTest {
   @Resource
   private UserRepository userRepository;
 
-  private BasicTextEncryptor textEncryptor;
   private ObjectMapper objectMapperSnakeCase;
   private UserService userService;
+  private User user;
 
   @Rule
   public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void setUp() {
-    userService = new UserService(googleOAuthClient, googleUserInfoClient, userRepository, textEncryptor);
+    userService = new UserService(googleOAuthClient, googleUserInfoClient, userRepository);
     objectMapperSnakeCase = new ObjectMapper()
         .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setSerializationInclusion(Include.NON_NULL)
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
         .registerModule(new Jdk8Module());
-    textEncryptor = new BasicTextEncryptor();
-    textEncryptor.setPasswordCharArray("birdy".toCharArray());
+    user = TestUtils.getTestUser();
   }
 
   @Before
@@ -117,16 +116,6 @@ public class UserServiceTest {
   }
 
   @Test
-  public void when_delete_inexistent_user_then_throw_not_found_exception() {
-    exceptionRule.expect(NotFoundException.class);
-    exceptionRule.expectMessage("User not exists");
-
-    doNothing().when(googleOAuthClient).revokeGoogleOAuthToken(anyString());
-
-    userService.deleteUser("inexistent_user_email");
-  }
-
-  @Test
   public void when_delete_user_then_repository_must_be_empty() {
     String oauthTokenStringResponse = TestUtils.readFile("google-oauth-api-json-responses/first_oauth_token.json");
     GoogleOAuthTokenDTO googleOAuthToken = TestUtils.stringToObject(oauthTokenStringResponse, GoogleOAuthTokenDTO.class, objectMapperSnakeCase);
@@ -140,15 +129,50 @@ public class UserServiceTest {
 
     doNothing().when(googleOAuthClient).revokeGoogleOAuthToken(anyString());
 
-    userService.createUser("google_auth_code");
+    User user = userService.createUser("google_auth_code");
 
     List<User> savedUsers = userRepository.findAll();
     Assert.assertEquals(savedUsers.get(0).getEmail(), "test@test.com");
     Assert.assertEquals(1, savedUsers.size());
 
-    userService.deleteUser("test@test.com");
+    userService.deleteUser(user);
 
     savedUsers = userRepository.findAll();
     Assert.assertEquals(0, savedUsers.size());
+  }
+
+  @Test
+  public void when_find_unsubscribe_user_with_valid_request_data_then_get_unsubscribe_user() {
+    userRepository.insert(user);
+
+    String userId = user.getId();
+    String userEmail= user.getEmail();
+    String key = userId+"&"+userEmail;
+    String data = Base64.getUrlEncoder().encodeToString(key.getBytes());
+
+    User unsubscribeUser = userService.getUserForUnsubscribe(data);
+
+    Assert.assertNotNull(unsubscribeUser);
+  }
+
+  @Test
+  public void when_find_unsubscribe_user_with_invalid_request_data_then_throw_bad_request_exception() {
+    exceptionRule.expect(BadRequestException.class);
+    exceptionRule.expectMessage("Failed when validate data: potato");
+
+    String data = "potato";
+
+    userService.getUserForUnsubscribe(data);
+  }
+
+  @Test
+  public void when_send_valid_request_data_and_inexistent_user_for_unsubscribe_then_throw_not_found_exception() {
+    exceptionRule.expect(NotFoundException.class);
+    exceptionRule.expectMessage("User not exists");
+
+    String key = "123&notexists";
+    String data = Base64.getUrlEncoder().encodeToString(key.getBytes());
+
+    userService.getUserForUnsubscribe(data);
   }
 }
