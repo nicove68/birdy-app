@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,8 @@ public class SendgridService {
     private static final String BIRTHDAY_EMAIL_TEMPLATE_ID = "d-0762b5a257ff477aafcdc3bfa87a2b1f";
     private static final String BIRTHDAY_EMAIL_SUBJECT = "Birdy - Cumpleaños %s.";
 
-    private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM");
-    private static final DateTimeFormatter HEADER_MESSAGE_DATE_FORMATTER = DateTimeFormatter.ofPattern("E dd 'de' MMMM 'de' yyyy");
+    private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM").withLocale(new Locale("es","AR"));
+    private static final DateTimeFormatter HEADER_MESSAGE_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy").withLocale(new Locale("es","AR"));
 
     @Value("${heroku.app.main-path}")
     private String herokuMainPath;

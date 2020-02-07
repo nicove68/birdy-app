@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class SendBirthdayEmailSchedulerJob {
 
     private static Logger logger = LoggerFactory.getLogger(SendBirthdayEmailSchedulerJob.class);
-    private static final String RUN_ALL_DAYS_AT_11_AM_UTC = "0 0 17 * * ?";
+    private static final String RUN_ALL_DAYS_AT_11_AM_UTC = "0 0 12 * * ?";
 
     private BirthdayService birthdayService;
     private SendgridService sendgridService;
