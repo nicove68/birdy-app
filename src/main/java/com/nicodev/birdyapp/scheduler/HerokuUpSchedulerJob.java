@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class HerokuUpSchedulerJob {
 
     private static Logger logger = LoggerFactory.getLogger(HerokuUpSchedulerJob.class);
-    private static final String RUN_EVERY_30_MINUTES = "0 0/30 * * * ?";
+    private static final String RUN_EVERY_5_MINUTES = "0 0/5 * * * ?";
 
     private RestTemplate restTemplate;
 
@@ -32,7 +32,7 @@ public class HerokuUpSchedulerJob {
             .build();
     }
 
-    @Scheduled(cron = RUN_EVERY_30_MINUTES)
+    @Scheduled(cron = RUN_EVERY_5_MINUTES)
     public void herokuUp() {
         logger.info("Start job: Heroku UP");
 
