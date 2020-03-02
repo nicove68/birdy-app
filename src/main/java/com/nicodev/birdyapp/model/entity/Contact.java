@@ -2,10 +2,16 @@ package com.nicodev.birdyapp.model.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "contacts")
+@CompoundIndexes({
+    @CompoundIndex(name = "idx_owner_email", def = "{'owner_email': 1}"),
+    @CompoundIndex(name = "idx_day_of_birth_month_of_birth", def = "{'day_of_birth' : 1, 'month_of_birth': 1}")
+})
 public class Contact {
 
     @Id

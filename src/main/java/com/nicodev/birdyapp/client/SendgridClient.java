@@ -3,7 +3,6 @@ package com.nicodev.birdyapp.client;
 import com.nicodev.birdyapp.model.BirdyEmail;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
-import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -19,7 +18,7 @@ public class SendgridClient {
 
   private static Logger logger = LoggerFactory.getLogger(SendgridClient.class);
 
-  private static final String FROM_EMAIL = "no-reply@birdy.com";
+  private static final String FROM_EMAIL = "no-reply@birdyapp.herokuapp.com";
   private static final String FROM_NAME = "Birdy";
 
   @Value("${sendgrid.api.apikey}")
@@ -49,7 +48,7 @@ public class SendgridClient {
       request.setMethod(Method.POST);
       request.setEndpoint("mail/send");
       request.setBody(mail.build());
-      Response response = sg.api(request);
+      sg.api(request);
 
     } catch (IOException ex) {
 
