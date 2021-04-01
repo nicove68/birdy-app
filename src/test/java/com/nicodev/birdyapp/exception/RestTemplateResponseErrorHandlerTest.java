@@ -1,29 +1,24 @@
 package com.nicodev.birdyapp.exception;
 
 import com.nicodev.birdyapp.exception.rest.RestException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Spy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
 public class RestTemplateResponseErrorHandlerTest {
 
-  @Resource
+  @Spy
   private RestTemplateResponseErrorHandler handler;
 
   @Mock

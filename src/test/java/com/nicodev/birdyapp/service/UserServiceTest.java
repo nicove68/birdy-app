@@ -19,6 +19,7 @@ import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
 import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
 import javax.annotation.Resource;
@@ -74,12 +75,17 @@ public class UserServiceTest {
 
   @Test
   public void when_google_oauth_and_userinfo_response_are_ok_then_save_user() {
-    String oauthTokenStringResponse = TestUtils.readFile("google-oauth-api-json-responses/first_oauth_token.json");
+    ClassLoader classLoader = getClass().getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream("google-oauth-api-json-responses/first_oauth_token.json");
+    String oauthTokenStringResponse = TestUtils.readFromInputStream(inputStream);
+
     GoogleOAuthTokenDTO googleOAuthToken = TestUtils.stringToObject(oauthTokenStringResponse, GoogleOAuthTokenDTO.class, objectMapperSnakeCase);
 
     when(googleOAuthClient.getGoogleOAuthToken(anyString())).thenReturn(googleOAuthToken);
 
-    String userInfoStringResponse = TestUtils.readFile("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    InputStream inputStream2 = classLoader.getResourceAsStream("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    String userInfoStringResponse = TestUtils.readFromInputStream(inputStream2);
+
     GoogleUserInfoDTO googleUserInfo = TestUtils.stringToObject(userInfoStringResponse, GoogleUserInfoDTO.class, objectMapperSnakeCase);
 
     when(googleUserInfoClient.getGoogleUserInfo(anyString())).thenReturn(googleUserInfo);
@@ -98,12 +104,15 @@ public class UserServiceTest {
 
   @Test
   public void when_user_already_exists_then_throw_bad_request_exception() {
-    String oauthTokenStringResponse = TestUtils.readFile("google-oauth-api-json-responses/first_oauth_token.json");
+    ClassLoader classLoader = getClass().getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream("google-oauth-api-json-responses/first_oauth_token.json");
+    String oauthTokenStringResponse = TestUtils.readFromInputStream(inputStream);
     GoogleOAuthTokenDTO googleOAuthToken = TestUtils.stringToObject(oauthTokenStringResponse, GoogleOAuthTokenDTO.class, objectMapperSnakeCase);
 
     when(googleOAuthClient.getGoogleOAuthToken(anyString())).thenReturn(googleOAuthToken);
 
-    String userInfoStringResponse = TestUtils.readFile("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    InputStream inputStream2 = classLoader.getResourceAsStream("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    String userInfoStringResponse = TestUtils.readFromInputStream(inputStream2);
     GoogleUserInfoDTO googleUserInfo = TestUtils.stringToObject(userInfoStringResponse, GoogleUserInfoDTO.class, objectMapperSnakeCase);
 
     when(googleUserInfoClient.getGoogleUserInfo(anyString())).thenReturn(googleUserInfo);
@@ -117,12 +126,15 @@ public class UserServiceTest {
 
   @Test
   public void when_delete_user_then_repository_must_be_empty() {
-    String oauthTokenStringResponse = TestUtils.readFile("google-oauth-api-json-responses/first_oauth_token.json");
+    ClassLoader classLoader = getClass().getClassLoader();
+    InputStream inputStream = classLoader.getResourceAsStream("google-oauth-api-json-responses/first_oauth_token.json");
+    String oauthTokenStringResponse = TestUtils.readFromInputStream(inputStream);
     GoogleOAuthTokenDTO googleOAuthToken = TestUtils.stringToObject(oauthTokenStringResponse, GoogleOAuthTokenDTO.class, objectMapperSnakeCase);
 
     when(googleOAuthClient.getGoogleOAuthToken(anyString())).thenReturn(googleOAuthToken);
 
-    String userInfoStringResponse = TestUtils.readFile("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    InputStream inputStream2 = classLoader.getResourceAsStream("google-userinfo-api-json-responses/userinfo_with_all_fields.json");
+    String userInfoStringResponse = TestUtils.readFromInputStream(inputStream2);
     GoogleUserInfoDTO googleUserInfo = TestUtils.stringToObject(userInfoStringResponse, GoogleUserInfoDTO.class, objectMapperSnakeCase);
 
     when(googleUserInfoClient.getGoogleUserInfo(anyString())).thenReturn(googleUserInfo);

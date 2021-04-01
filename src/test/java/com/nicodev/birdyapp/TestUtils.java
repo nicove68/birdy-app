@@ -1,12 +1,12 @@
 package com.nicodev.birdyapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -17,11 +17,14 @@ public class TestUtils {
 
   public static final Logger logger = LoggerFactory.getLogger(TestUtils.class);
 
-  @SuppressWarnings("UnstableApiUsage")
-  public static String readFile(String file) {
-    URL url = Resources.getResource(file);
-    try {
-      return Resources.toString(url, Charsets.UTF_8);
+  public static String readFromInputStream(InputStream inputStream) {
+    StringBuilder resultStringBuilder = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        resultStringBuilder.append(line).append("\n");
+      }
+      return resultStringBuilder.toString();
     } catch (IOException e) {
       logger.error("TestUtils:readFile::exceptionMessage={}", e.getMessage());
       return null;
