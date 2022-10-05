@@ -1,9 +1,5 @@
 package com.nicodev.birdyapp.service;
 
-import com.nicodev.birdyapp.client.SendgridClient;
-import com.nicodev.birdyapp.model.BirdyEmail;
-import com.nicodev.birdyapp.model.entity.Contact;
-import com.nicodev.birdyapp.model.entity.User;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +7,11 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import com.nicodev.birdyapp.client.SendgridClient;
+import com.nicodev.birdyapp.model.BirdyEmail;
+import com.nicodev.birdyapp.model.entity.Contact;
+import com.nicodev.birdyapp.model.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class SendgridService {
 
-    private static Logger logger = LoggerFactory.getLogger(SendgridService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SendgridService.class);
 
     private static final String WELCOME_EMAIL_TEMPLATE_ID = "d-baf1a04e25c04e6c86947cbacf52bff7";
     private static final String WELCOME_EMAIL_SUBJECT = "Bienvenido a Birdy";
@@ -35,10 +36,10 @@ public class SendgridService {
     private static final DateTimeFormatter SUBJECT_DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMM").withLocale(new Locale("es","AR"));
     private static final DateTimeFormatter HEADER_MESSAGE_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy").withLocale(new Locale("es","AR"));
 
-    @Value("${heroku.app.main-path}")
-    private String herokuMainPath;
+    @Value("${app.main-path}")
+    private String appMainPath;
 
-    private SendgridClient sendGridClient;
+    private final SendgridClient sendGridClient;
 
     @Autowired
     public SendgridService(SendgridClient sendGridClient) {
@@ -93,7 +94,7 @@ public class SendgridService {
         String key = user.getId()+"&"+user.getEmail();
         String data = Base64.getUrlEncoder().encodeToString(key.getBytes());
         return UriComponentsBuilder
-            .fromUriString(herokuMainPath)
+            .fromUriString(appMainPath)
             .path("/unsubscribe")
             .queryParam("data", data)
             .build().toUri();

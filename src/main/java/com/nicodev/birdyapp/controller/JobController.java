@@ -1,10 +1,11 @@
 package com.nicodev.birdyapp.controller;
 
+import java.util.List;
+
 import com.nicodev.birdyapp.exception.rest.BadRequestException;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.service.ContactService;
 import com.nicodev.birdyapp.service.UserService;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/jobs")
 public class JobController {
 
-  private static Logger logger = LoggerFactory.getLogger(JobController.class);
+  private static final Logger logger = LoggerFactory.getLogger(JobController.class);
 
   @Value("${birdy.api.key}")
   private String birdyApiKey;
 
-  private UserService userService;
-  private ContactService contactService;
+  private final UserService userService;
+
+  private final ContactService contactService;
 
   @Autowired
   public JobController(
@@ -44,7 +46,7 @@ public class JobController {
 
     logger.info("Start job: import contacts manually");
     List<User> allUsers = userService.getAllUsers();
-    allUsers.forEach(user -> contactService.updateContacts(user));
+    allUsers.forEach(contactService::updateContacts);
     logger.info("End job: import contacts manually");
   }
 }

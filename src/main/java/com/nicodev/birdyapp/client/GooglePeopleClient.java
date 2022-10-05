@@ -14,7 +14,7 @@ public class GooglePeopleClient {
 
     private static final int MAX_PAGE_SIZE = 2000;
 
-    private RestTemplate restTemplateGooglePeopleApi;
+    private final RestTemplate restTemplateGooglePeopleApi;
 
     @Value("${google.api.people.endpoint}")
     private String googleApiPeopleEndpoint;

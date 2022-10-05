@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SendgridClient {
 
-  private static Logger logger = LoggerFactory.getLogger(SendgridClient.class);
+  private static final Logger logger = LoggerFactory.getLogger(SendgridClient.class);
 
   private static final String FROM_EMAIL = "no-reply@birdyapp.herokuapp.com";
   private static final String FROM_NAME = "Birdy";

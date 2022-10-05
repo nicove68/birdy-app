@@ -1,5 +1,10 @@
 package com.nicodev.birdyapp.service;
 
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
 import com.nicodev.birdyapp.client.GoogleOAuthClient;
 import com.nicodev.birdyapp.client.GoogleUserInfoClient;
 import com.nicodev.birdyapp.exception.rest.BadRequestException;
@@ -9,10 +14,6 @@ import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
 import com.nicodev.birdyapp.transformer.UserTransformer;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private static Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private GoogleOAuthClient googleOAuthClient;
-    private GoogleUserInfoClient googleUserInfoClient;
-    private UserRepository userRepository;
+    private final GoogleOAuthClient googleOAuthClient;
+
+    private final GoogleUserInfoClient googleUserInfoClient;
+
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(
@@ -84,7 +87,7 @@ public class UserService {
 
     private User findUserForUnsubscribe(String userId, String userEmail) {
         Optional<User> user = userRepository.findByIdAndEmail(userId, userEmail);
-        if (!user.isPresent())
+        if (user.isEmpty())
             throw new NotFoundException("User not exists");
 
         return user.get();

@@ -1,8 +1,9 @@
 package com.nicodev.birdyapp.scheduler;
 
+import java.net.URI;
+
 import com.nicodev.birdyapp.configuration.CustomClientHttpRequestInterceptor;
 import com.nicodev.birdyapp.exception.RestTemplateResponseErrorHandler;
-import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +15,18 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-public class HerokuUpSchedulerJob {
+public class AppUpSchedulerJob {
 
-    private static Logger logger = LoggerFactory.getLogger(HerokuUpSchedulerJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppUpSchedulerJob.class);
     private static final String RUN_EVERY_5_MINUTES = "0 0/5 * * * ?";
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    @Value("${heroku.app.main-path}")
-    private String herokuMainPath;
+    @Value("${app.main-path}")
+    private String appMainPath;
 
     @Autowired
-    public HerokuUpSchedulerJob() {
+    public AppUpSchedulerJob() {
         this.restTemplate = new RestTemplateBuilder()
             .errorHandler(new RestTemplateResponseErrorHandler())
             .additionalInterceptors(new CustomClientHttpRequestInterceptor())
@@ -33,15 +34,15 @@ public class HerokuUpSchedulerJob {
     }
 
     @Scheduled(cron = RUN_EVERY_5_MINUTES)
-    public void herokuUp() {
-        logger.info("Start job: Heroku UP");
+    public void appIsUp() {
+        logger.info("Start job: is BirdyApp UP?");
 
-        URI herokuUri = UriComponentsBuilder
-            .fromUriString(herokuMainPath)
+        URI appUri = UriComponentsBuilder
+            .fromUriString(appMainPath)
             .build().toUri();
 
-        restTemplate.getForEntity(herokuUri, String.class);
+        restTemplate.getForEntity(appUri, String.class);
 
-        logger.info("End job: Heroku UP");
+        logger.info("End job: Yes, BirdyApp is UP!");
     }
 }

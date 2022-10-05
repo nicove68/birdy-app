@@ -1,7 +1,12 @@
 package com.nicodev.birdyapp.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
+
+import java.io.InputStream;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,23 +21,19 @@ import com.nicodev.birdyapp.model.dto.GoogleConnectionResponseDTO;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.ContactRepository;
-import java.io.InputStream;
-import java.util.List;
 import javax.annotation.Resource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-
-@RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DataMongoTest
-public class ContactServiceTest {
+@ImportAutoConfiguration(exclude = EmbeddedMongoAutoConfiguration.class)
+class ContactServiceTest {
 
   @Mock
   private GooglePeopleClient googlePeopleClient;
@@ -47,7 +48,7 @@ public class ContactServiceTest {
   private ContactService contactService;
   private User user;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     contactService = new ContactService(googlePeopleClient, googleOAuthClient, contactRepository);
     user = TestUtils.getTestUser("Test");
@@ -59,13 +60,13 @@ public class ContactServiceTest {
         .registerModule(new Jdk8Module());
   }
 
-  @Before
+  @BeforeEach
   public void init() {
     contactRepository.deleteAll();
   }
 
   @Test
-  public void when_people_connection_has_all_fields_then_save_contact() {
+  void when_people_connection_has_all_fields_then_save_contact() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-people-api-json-responses/connection_with_all_fields.json");
     String stringResponse = TestUtils.readFromInputStream(inputStream);
@@ -77,19 +78,19 @@ public class ContactServiceTest {
     List<Contact> contacts = contactService.createContacts(user);
     Contact theContact = contacts.get(0);
 
-    Assert.assertNotNull(theContact.getOwnerEmail());
-    Assert.assertNotNull(theContact.getName());
-    Assert.assertNotNull(theContact.getPhotoUrl());
-    Assert.assertEquals(4, theContact.getDayOfBirth());
-    Assert.assertEquals(6, theContact.getMonthOfBirth());
-    Assert.assertNotNull(theContact.getGooglePersonId());
+    assertNotNull(theContact.getOwnerEmail());
+    assertNotNull(theContact.getName());
+    assertNotNull(theContact.getPhotoUrl());
+    assertEquals(4, theContact.getDayOfBirth());
+    assertEquals(6, theContact.getMonthOfBirth());
+    assertNotNull(theContact.getGooglePersonId());
 
     List<Contact> savedContacts = contactRepository.findAll();
-    Assert.assertEquals(1, savedContacts.size());
+    assertEquals(1, savedContacts.size());
   }
 
   @Test
-  public void when_people_connection_has_not_birthday_day_then_discard_contact() {
+  void when_people_connection_has_not_birthday_day_then_discard_contact() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-people-api-json-responses/connection_without_birthday_day.json");
     String stringResponse = TestUtils.readFromInputStream(inputStream);
@@ -100,11 +101,11 @@ public class ContactServiceTest {
 
     List<Contact> contacts = contactService.createContacts(user);
 
-    Assert.assertEquals(0, contacts.size());
+    assertEquals(0, contacts.size());
   }
 
   @Test
-  public void when_people_connection_has_not_birthday_then_discard_contact() {
+  void when_people_connection_has_not_birthday_then_discard_contact() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-people-api-json-responses/connection_without_birthdays.json");
     String stringResponse = TestUtils.readFromInputStream(inputStream);
@@ -115,11 +116,11 @@ public class ContactServiceTest {
 
     List<Contact> contacts = contactService.createContacts(user);
 
-    Assert.assertEquals(0, contacts.size());
+    assertEquals(0, contacts.size());
   }
 
   @Test
-  public void when_people_connection_has_not_name_then_discard_contact() {
+  void when_people_connection_has_not_name_then_discard_contact() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-people-api-json-responses/connection_without_names.json");
     String stringResponse = TestUtils.readFromInputStream(inputStream);
@@ -130,11 +131,11 @@ public class ContactServiceTest {
 
     List<Contact> contacts = contactService.createContacts(user);
 
-    Assert.assertEquals(0, contacts.size());
+    assertEquals(0, contacts.size());
   }
 
   @Test
-  public void when_people_connection_has_not_photos_then_return_contact_with_default_photo() {
+  void when_people_connection_has_not_photos_then_return_contact_with_default_photo() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-people-api-json-responses/connection_without_photos.json");
     String stringResponse = TestUtils.readFromInputStream(inputStream);
@@ -146,16 +147,16 @@ public class ContactServiceTest {
     List<Contact> contacts = contactService.createContacts(user);
     Contact theContact = contacts.get(0);
 
-    Assert.assertNotNull(theContact.getOwnerEmail());
-    Assert.assertNotNull(theContact.getName());
-    Assert.assertNotNull(theContact.getPhotoUrl());
-    Assert.assertEquals("empty_profile_url", theContact.getPhotoUrl());
-    Assert.assertEquals(4, theContact.getDayOfBirth());
-    Assert.assertEquals(6, theContact.getMonthOfBirth());
-    Assert.assertNotNull(theContact.getGooglePersonId());
+    assertNotNull(theContact.getOwnerEmail());
+    assertNotNull(theContact.getName());
+    assertNotNull(theContact.getPhotoUrl());
+    assertEquals("empty_profile_url", theContact.getPhotoUrl());
+    assertEquals(4, theContact.getDayOfBirth());
+    assertEquals(6, theContact.getMonthOfBirth());
+    assertNotNull(theContact.getGooglePersonId());
 
     List<Contact> savedContacts = contactRepository.findAll();
 
-    Assert.assertEquals(1, savedContacts.size());
+    assertEquals(1, savedContacts.size());
   }
 }

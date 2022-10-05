@@ -7,19 +7,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class GoogleUserInfoClientTest {
+class GoogleUserInfoClientTest {
 
   @Mock
   private RestTemplate restTemplate;
@@ -27,13 +28,13 @@ public class GoogleUserInfoClientTest {
   @InjectMocks
   private GoogleUserInfoClient client;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     ReflectionTestUtils.setField(client, "googleApiUserInfoEndpoint", "https://api.example.com");
   }
 
   @Test
-  public void verify_google_user_info_client_test() {
+  void verify_google_user_info_client_test() {
     when(restTemplate.getForObject(any(), eq(GoogleUserInfoDTO.class)))
             .thenReturn(new GoogleUserInfoDTO());
 

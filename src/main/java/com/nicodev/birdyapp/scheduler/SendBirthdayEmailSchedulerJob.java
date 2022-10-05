@@ -1,12 +1,13 @@
 package com.nicodev.birdyapp.scheduler;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.service.BirthdayService;
 import com.nicodev.birdyapp.service.SendgridService;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SendBirthdayEmailSchedulerJob {
 
-    private static Logger logger = LoggerFactory.getLogger(SendBirthdayEmailSchedulerJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(SendBirthdayEmailSchedulerJob.class);
     private static final String RUN_ALL_DAYS_AT_11_AM_UTC = "0 0 11 * * ?";
 
-    private BirthdayService birthdayService;
-    private SendgridService sendgridService;
+    private final BirthdayService birthdayService;
+
+    private final SendgridService sendgridService;
 
     @Autowired
     public SendBirthdayEmailSchedulerJob(

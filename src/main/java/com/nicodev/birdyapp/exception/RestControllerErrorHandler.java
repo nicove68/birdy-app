@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class RestControllerErrorHandler {
 
-  private Logger logger = LoggerFactory.getLogger(RestControllerErrorHandler.class);
+  private final Logger logger = LoggerFactory.getLogger(RestControllerErrorHandler.class);
 
   private static final String ERROR_EXECUTING = "Error executing ";
   

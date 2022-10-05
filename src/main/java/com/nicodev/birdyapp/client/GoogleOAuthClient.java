@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class GoogleOAuthClient {
 
-    private RestTemplate restTemplateGoogleApi;
+    private final RestTemplate restTemplateGoogleApi;
 
     @Value("${google.api.oauth.endpoint}")
     private String googleApiOAuthEndpoint;

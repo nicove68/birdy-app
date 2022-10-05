@@ -1,8 +1,14 @@
 package com.nicodev.birdyapp.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
+import java.io.InputStream;
+import java.util.Base64;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,26 +25,20 @@ import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
 import com.nicodev.birdyapp.model.dto.GoogleUserInfoDTO;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.UserRepository;
-import java.io.InputStream;
-import java.util.Base64;
-import java.util.List;
 import javax.annotation.Resource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-
-@RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DataMongoTest
-public class UserServiceTest {
+@ImportAutoConfiguration(exclude = EmbeddedMongoAutoConfiguration.class)
+class UserServiceTest {
 
   @Mock
   private GoogleOAuthClient googleOAuthClient;
@@ -53,11 +53,8 @@ public class UserServiceTest {
   private UserService userService;
   private User user;
 
-  @Rule
-  public ExpectedException exceptionRule = ExpectedException.none();
-
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     userService = new UserService(googleOAuthClient, googleUserInfoClient, userRepository);
     objectMapperSnakeCase = new ObjectMapper()
         .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
@@ -68,13 +65,13 @@ public class UserServiceTest {
     user = TestUtils.getTestUser("Test");
   }
 
-  @Before
-  public void init() {
+  @BeforeEach
+  void init() {
     userRepository.deleteAll();
   }
 
   @Test
-  public void when_google_oauth_and_userinfo_response_are_ok_then_save_user() {
+  void when_google_oauth_and_userinfo_response_are_ok_then_save_user() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-oauth-api-json-responses/first_oauth_token.json");
     String oauthTokenStringResponse = TestUtils.readFromInputStream(inputStream);
@@ -92,18 +89,18 @@ public class UserServiceTest {
 
     User user = userService.createUser("google_auth_code");
 
-    Assert.assertNotNull(user.getName());
-    Assert.assertNotNull(user.getEmail());
-    Assert.assertNotNull(user.getGoogleAccessToken());
-    Assert.assertNotNull(user.getGoogleRefreshToken());
+    assertNotNull(user.getName());
+    assertNotNull(user.getEmail());
+    assertNotNull(user.getGoogleAccessToken());
+    assertNotNull(user.getGoogleRefreshToken());
 
     List<User> savedUsers = userRepository.findAll();
-    Assert.assertEquals(1, savedUsers.size());
+    assertEquals(1, savedUsers.size());
   }
 
 
   @Test
-  public void when_user_already_exists_then_throw_bad_request_exception() {
+  void when_user_already_exists_then_throw_bad_request_exception() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-oauth-api-json-responses/first_oauth_token.json");
     String oauthTokenStringResponse = TestUtils.readFromInputStream(inputStream);
@@ -117,15 +114,15 @@ public class UserServiceTest {
 
     when(googleUserInfoClient.getGoogleUserInfo(anyString())).thenReturn(googleUserInfo);
 
-    exceptionRule.expect(BadRequestException.class);
-    exceptionRule.expectMessage("User is already registered");
+    userService.createUser("google_auth_code");
 
-    userService.createUser("google_auth_code");
-    userService.createUser("google_auth_code");
+    BadRequestException thrown = Assertions.assertThrows(BadRequestException.class,
+        () -> userService.createUser("google_auth_code"));
+    Assertions.assertEquals("User is already registered", thrown.getResponse().getBody());
   }
 
   @Test
-  public void when_delete_user_then_repository_must_be_empty() {
+  void when_delete_user_then_repository_must_be_empty() {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream("google-oauth-api-json-responses/first_oauth_token.json");
     String oauthTokenStringResponse = TestUtils.readFromInputStream(inputStream);
@@ -144,17 +141,17 @@ public class UserServiceTest {
     User user = userService.createUser("google_auth_code");
 
     List<User> savedUsers = userRepository.findAll();
-    Assert.assertEquals(savedUsers.get(0).getEmail(), "test@test.com");
-    Assert.assertEquals(1, savedUsers.size());
+    assertEquals(savedUsers.get(0).getEmail(), "test@test.com");
+    assertEquals(1, savedUsers.size());
 
     userService.deleteUser(user);
 
     savedUsers = userRepository.findAll();
-    Assert.assertEquals(0, savedUsers.size());
+    assertEquals(0, savedUsers.size());
   }
 
   @Test
-  public void when_find_unsubscribe_user_with_valid_request_data_then_get_unsubscribe_user() {
+  void when_find_unsubscribe_user_with_valid_request_data_then_get_unsubscribe_user() {
     userRepository.insert(user);
 
     String userId = user.getId();
@@ -164,27 +161,23 @@ public class UserServiceTest {
 
     User unsubscribeUser = userService.getUserForUnsubscribe(data);
 
-    Assert.assertNotNull(unsubscribeUser);
+    assertNotNull(unsubscribeUser);
   }
 
   @Test
-  public void when_find_unsubscribe_user_with_invalid_request_data_then_throw_bad_request_exception() {
-    exceptionRule.expect(BadRequestException.class);
-    exceptionRule.expectMessage("Failed when validate data: potato");
-
+  void when_find_unsubscribe_user_with_invalid_request_data_then_throw_bad_request_exception() {
     String data = "potato";
 
-    userService.getUserForUnsubscribe(data);
+    BadRequestException thrown = Assertions.assertThrows(BadRequestException.class, () -> userService.getUserForUnsubscribe(data));
+    Assertions.assertEquals("Failed when validate data: potato", thrown.getResponse().getBody());
   }
 
   @Test
-  public void when_send_valid_request_data_and_inexistent_user_for_unsubscribe_then_throw_not_found_exception() {
-    exceptionRule.expect(NotFoundException.class);
-    exceptionRule.expectMessage("User not exists");
-
+  void when_send_valid_request_data_and_inexistent_user_for_unsubscribe_then_throw_not_found_exception() {
     String key = "123&notexists";
     String data = Base64.getUrlEncoder().encodeToString(key.getBytes());
 
-    userService.getUserForUnsubscribe(data);
+    NotFoundException thrown = Assertions.assertThrows(NotFoundException.class, () -> userService.getUserForUnsubscribe(data));
+    Assertions.assertEquals("User not exists", thrown.getResponse().getBody());
   }
 }

@@ -12,7 +12,7 @@ import java.net.URI;
 @Component
 public class GoogleUserInfoClient {
 
-    private RestTemplate restTemplateGoogleApi;
+    private final RestTemplate restTemplateGoogleApi;
 
     @Value("${google.api.userinfo.endpoint}")
     private String googleApiUserInfoEndpoint;

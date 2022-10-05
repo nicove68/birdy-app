@@ -7,19 +7,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.nicodev.birdyapp.model.dto.GoogleOAuthTokenDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class GoogleOAuthClientTest {
+class GoogleOAuthClientTest {
 
   @Mock
   private RestTemplate restTemplate;
@@ -27,8 +27,8 @@ public class GoogleOAuthClientTest {
   @InjectMocks
   private GoogleOAuthClient client;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     ReflectionTestUtils.setField(client, "googleApiClientId", "client_id");
     ReflectionTestUtils.setField(client, "googleApiClientSecret", "client_secret");
     ReflectionTestUtils.setField(client, "googleApiOAuthRedirectUri", "https://redirect.com");
@@ -36,7 +36,7 @@ public class GoogleOAuthClientTest {
   }
 
   @Test
-  public void verify_google_oauth_client_test() {
+  void verify_google_oauth_client_test() {
     when(restTemplate.postForObject(any(), any(), eq(GoogleOAuthTokenDTO.class)))
             .thenReturn(new GoogleOAuthTokenDTO());
 
@@ -46,7 +46,7 @@ public class GoogleOAuthClientTest {
   }
 
   @Test
-  public void verify_google_oauth_refresh_client_test() {
+  void verify_google_oauth_refresh_client_test() {
     when(restTemplate.postForObject(any(), any(), eq(GoogleOAuthTokenDTO.class)))
             .thenReturn(new GoogleOAuthTokenDTO());
 

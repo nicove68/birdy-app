@@ -1,5 +1,9 @@
 package com.nicodev.birdyapp.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.nicodev.birdyapp.client.GoogleOAuthClient;
 import com.nicodev.birdyapp.client.GooglePeopleClient;
 import com.nicodev.birdyapp.model.dto.GoogleConnectionItemBirthdayDTO;
@@ -10,9 +14,6 @@ import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.ContactRepository;
 import com.nicodev.birdyapp.transformer.ContactTransformer;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContactService {
 
-    private static Logger logger = LoggerFactory.getLogger(ContactService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
 
-    private GooglePeopleClient googlePeopleClient;
-    private GoogleOAuthClient googleOAuthClient;
-    private ContactRepository contactRepository;
+    private final GooglePeopleClient googlePeopleClient;
+
+    private final GoogleOAuthClient googleOAuthClient;
+
+    private final ContactRepository contactRepository;
 
     @Autowired
     public ContactService(

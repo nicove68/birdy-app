@@ -4,18 +4,18 @@ Birdy is an email birthday reminder tool developed primarily for users who have 
 
 #### Technology stack
 
-- Java 8
+- Java 11
 - Maven
 - SpringBoot
 - Thymeleaf
 - Bootstrap
 - MongoDB
-- Heroku
 
 #### Requirements
 
 - Maven
-- JDK 1.8
+- MongoDB
+- JDK 11
 
 ## Documentation
 

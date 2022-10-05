@@ -1,28 +1,29 @@
 package com.nicodev.birdyapp.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.nicodev.birdyapp.TestUtils;
 import com.nicodev.birdyapp.model.entity.Contact;
 import com.nicodev.birdyapp.model.entity.User;
 import com.nicodev.birdyapp.repository.ContactRepository;
 import com.nicodev.birdyapp.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.Resource;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-
-@RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DataMongoTest
-public class BirthdayServiceTest {
+@ImportAutoConfiguration(exclude = EmbeddedMongoAutoConfiguration.class)
+class BirthdayServiceTest {
 
   @Resource
   private UserRepository userRepository;
@@ -32,8 +33,8 @@ public class BirthdayServiceTest {
 
   private BirthdayService birthdayService;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     birthdayService = new BirthdayService(userRepository, contactRepository);
 
     String jonName = "Jon Jonson";
@@ -63,22 +64,28 @@ public class BirthdayServiceTest {
     contactRepository.saveAll(allContacts);
   }
 
+  @BeforeEach
+  public void init() {
+    contactRepository.deleteAll();
+    userRepository.deleteAll();
+  }
+
   @Test
-  public void when_get_today_birthdays_check_map_of_owner_and_contacts() {
+  void when_get_today_birthdays_check_map_of_owner_and_contacts() {
     int day = 6;
     int month = 8;
     Map<User, List<Contact>> todayBirthdaysMap = birthdayService.getTodayBirthdays(day, month);
 
-    Assert.assertEquals(3, todayBirthdaysMap.keySet().size());
+    assertEquals(3, todayBirthdaysMap.keySet().size());
     todayBirthdaysMap.forEach((owner, contacts) -> {
       if (owner.getEmail().equals("jonjonson@test.com"))
-        Assert.assertEquals(3, contacts.size());
+        assertEquals(3, contacts.size());
 
       if (owner.getEmail().equals("melmelson@test.com"))
-        Assert.assertEquals(1, contacts.size());
+        assertEquals(1, contacts.size());
 
       if (owner.getEmail().equals("kimkimson@test.com"))
-        Assert.assertEquals(2, contacts.size());
+        assertEquals(2, contacts.size());
     });
   }
 }

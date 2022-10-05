@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Controller
 public class WebController {
 
-  private static Logger logger = LoggerFactory.getLogger(WebController.class);
+  private static final Logger logger = LoggerFactory.getLogger(WebController.class);
 
   private static final String MSG_OK_TITLE = "Yey!";
   private static final String MSG_OK_PRIMARY = "¡%s agendamos tus %s cumpleaños!";
@@ -43,9 +43,11 @@ public class WebController {
   @Value("${google.api.oauth.redirect-uri}")
   private String googleApiOAuthRedirectUri;
 
-  private UserService userService;
-  private ContactService contactService;
-  private SendgridService sendgridService;
+  private final UserService userService;
+
+  private final ContactService contactService;
+
+  private final SendgridService sendgridService;
 
   @Autowired
   public WebController(

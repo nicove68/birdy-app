@@ -1,6 +1,5 @@
 package com.nicodev.birdyapp.configuration;
 
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -14,7 +13,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -35,7 +33,7 @@ public class AppConfiguration implements WebMvcConfigurer {
   private String mongoUri;
 
   @Bean
-  public MongoDbFactory mongoDbFactory() {
+  public SimpleMongoClientDbFactory mongoDbFactory() {
     return new SimpleMongoClientDbFactory(this.mongoUri);
   }
 
