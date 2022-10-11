@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.nicodev.birdyapp.exception.RestTemplateResponseErrorHandler;
+import com.sendgrid.SendGrid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,9 @@ public class AppConfiguration implements WebMvcConfigurer {
 
   @Value("${spring.data.mongodb.uri}")
   private String mongoUri;
+
+  @Value("${spring.sendgrid.api-key}")
+  private String sendgridApiKey;
 
   @Bean
   public SimpleMongoClientDbFactory mongoDbFactory() {
@@ -84,5 +88,10 @@ public class AppConfiguration implements WebMvcConfigurer {
             .additionalMessageConverters(mappingJacksonHttpMessageConverter(objectMapperCamelCase()))
             .additionalInterceptors(new CustomClientHttpRequestInterceptor())
             .build();
+  }
+
+  @Bean
+  public SendGrid sendGridClient() {
+    return new SendGrid(sendgridApiKey);
   }
 }

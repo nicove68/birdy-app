@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <title>Birdy</title>
+</head>
+<body>
+
+
+<table width="100%" style="background: #f3f3f3; padding: 50px">
+  <tr>
+    <td>
+      <table width="600px" style="margin: 0 auto; background: #ffffff" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <table width="600px">
+              <tr>
+                <td style="padding: 25px 30px 10px" align="left" valign="middle">
+                  <a href="#" title="Birdy">
+                    <img src="https://birdyapp.herokuapp.com/images/birdy_logo.jpg" style="max-width: 120px" />
+                  </a>
+                </td>
+                <td style="padding: 25px 30px 10px" align="right" valign="middle">
+                  <p style="font: 27px Arial, sans-serif; color: #dc3545; margin: 0">Cumpleaños de hoy</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="background: #dc3545; padding: 12px 30px" align="right">
+            <p style="font: 15px Arial, sans-serif; color: #ffffff; margin: 0; text-transform: uppercase;">{{header_message}}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table width="450px" align="center" style="margin-top: 60px; border-collapse:separate; border-spacing: 0 10px">
+              <tr>
+                <td>
+                  {{birthday_names}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 40px" align="center">
+            <p style="font: 17px Arial, sans-serif; color: #333333; margin: 0 0 5px; text-transform: uppercase;">¡Saluda a tus contactos!</p>
+            <p style="font: 14px Arial, sans-serif; color: #dc3545; margin: 0">Powered by Birdy</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 40px 0 20px" align="center">
+            <p style="font: 12px Arial, sans-serif; color: #828282">Si deseas desuscribirte puedes hacerlo desde <a href="{{unsubscribe_link}}" style="color: #828282">aquí</a>.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+
+</body>
+</html>
