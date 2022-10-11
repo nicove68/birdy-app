@@ -33,7 +33,7 @@ public class AppUpSchedulerJob {
             .build();
     }
 
-    @Scheduled(cron = RUN_EVERY_5_MINUTES)
+    //@Scheduled(cron = RUN_EVERY_5_MINUTES)
     public void appIsUp() {
         logger.info("Start job: is BirdyApp UP?");
 

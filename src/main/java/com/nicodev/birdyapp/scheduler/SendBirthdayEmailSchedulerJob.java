@@ -18,7 +18,11 @@ import org.springframework.stereotype.Service;
 public class SendBirthdayEmailSchedulerJob {
 
     private static final Logger logger = LoggerFactory.getLogger(SendBirthdayEmailSchedulerJob.class);
-    private static final String RUN_ALL_DAYS_AT_11_AM_UTC = "0 0 11 * * ?";
+
+    // 5 AM UTC is equivalent to:
+    // 2 AM in Argentina.
+    // 7 AM in Spain.
+    private static final String RUN_ALL_DAYS_AT_5_AM_UTC = "0 0 5 * * ?";
 
     private final BirthdayService birthdayService;
 
@@ -33,7 +37,7 @@ public class SendBirthdayEmailSchedulerJob {
         this.sendgridService = sendgridService;
     }
 
-    @Scheduled(cron = RUN_ALL_DAYS_AT_11_AM_UTC)
+    @Scheduled(cron = RUN_ALL_DAYS_AT_5_AM_UTC)
     public void sendBirthdayEmail() {
         logger.info("Start job: send birthday emails");
 

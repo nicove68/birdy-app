@@ -15,7 +15,11 @@ import org.springframework.stereotype.Service;
 public class ImportContactSchedulerJob {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportContactSchedulerJob.class);
-    private static final String RUN_ALL_DAYS_AT_6_AM_UTC = "0 0 6 * * ?";
+
+    // 21 PM UTC is equivalent to:
+    // 18 PM in Argentina.
+    // 23 PM in Spain.
+    private static final String RUN_ALL_DAYS_AT_21_PM_UTC = "0 0 21 * * ?";
 
     private final UserService userService;
 
@@ -28,7 +32,7 @@ public class ImportContactSchedulerJob {
     }
 
 
-    @Scheduled(cron = RUN_ALL_DAYS_AT_6_AM_UTC)
+    @Scheduled(cron = RUN_ALL_DAYS_AT_21_PM_UTC)
     public void updateContacts() {
         logger.info("Start job: import contacts");
         List<User> allUsers = userService.getAllUsers();

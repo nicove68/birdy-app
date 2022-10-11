@@ -87,5 +87,8 @@ class BirthdayServiceTest {
       if (owner.getEmail().equals("kimkimson@test.com"))
         assertEquals(2, contacts.size());
     });
+
+    contactRepository.deleteAll();
+    userRepository.deleteAll();
   }
 }
